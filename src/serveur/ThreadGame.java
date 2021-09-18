@@ -46,41 +46,6 @@ class ThreadGame extends Thread{
 	}
 	
 	
-	/*class ThreadPlayer extends Thread{
-		private Joueur joueur;
-		private int idJ;
 
-		public ThreadPlayer(Joueur player, int id) {
-			super();
-			this.joueur = player;
-			this.idJ = id;
-		}
-		
-		@Override
-		public void run() {
-			super.run();
-			
-			InputStream isJoueur;
-			try {
-				isJoueur = j1.socketJoueur.getInputStream();
-				InputStreamReader isrJoueur = new InputStreamReader(isJoueur);
-				BufferedReader brJoueur = new BufferedReader(isrJoueur);
-				PrintWriter pwJoueur = new PrintWriter(j1.socketJoueur.getOutputStream(), true);
-				pwJoueur.println("Bienvenu Joueur "+idJ+" dans la Partie "+nombrePartie+" ! Entrer votre nom : \n");
-				joueur.nomJoueur = brJoueur.readLine();
-				
-				System.out.println("~Connexion établie avec "+joueur.nomJoueur+"/Partie"+nombrePartie+" Ip: "+joueur.socketJoueur.getRemoteSocketAddress());
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
-		
-		
-		
-	}*/
 	
 }
