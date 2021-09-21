@@ -42,9 +42,8 @@ class ThreadGame extends Thread{
 	
 	
 	public class ThreadJoueur extends Thread{
-		private Joueur joueur;
+		Joueur joueur;  //disponible dans le package serveur
 		private int idJoueur;
-		//private int temoin =0;
 		
 		
 		
@@ -53,7 +52,7 @@ class ThreadGame extends Thread{
 			this.idJoueur = idJoueur;
 		}
 
-		public void broadCast(String message, Socket socketJ) {
+		/*public void broadCast(String message, Socket socketJ) {
 			try {
 				for(ThreadJoueur player : listeJoueur) {
 					if(player.joueur.socketJoueur!=socketJ) {
@@ -65,7 +64,7 @@ class ThreadGame extends Thread{
 
 				e.printStackTrace();
 			}
-		}
+		}*/
 		
 		@Override
 		public void run() {
@@ -79,21 +78,18 @@ class ThreadGame extends Thread{
 				joueur.nomJoueur = brJoueur.readLine();
 				
 				System.out.println("~Connexion établie avec @"+joueur.nomJoueur+" Joueur"+idJoueur+"/Partie"+nombrePartie+" Ip: "+joueur.socketJoueur.getRemoteSocketAddress());
-				//temoin++;
-				//System.out.println("temoin="+temoin);
 				
 				while(true) {
 					String requeteJoueur = brJoueur.readLine().toString();
-					String messageClient = "\n"+joueur.nomJoueur+": "+requeteJoueur;		
-					broadCast(messageClient,joueur.socketJoueur);
+					String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
+					new Commandes(listeJoueur, messageJoueur, joueur.socketJoueur).start();
+					//broadCast(messageJoueur,joueur.socketJoueur);
 					System.out.println("[!]Nouveau message de "+joueur.nomJoueur);	
 				}
 				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-			//if(temoin==2) System.out.println("~La Partie "+nombrePartie+" vient de commencer.");
 				
 		}
 	}
