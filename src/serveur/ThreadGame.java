@@ -56,14 +56,14 @@ class ThreadGame extends Thread{
 		public void run() {
 			//Streams Joueur
 			try {
-				InputStream isJoueur = joueur.socketJoueur.getInputStream();
-				InputStreamReader isrJoueur = new InputStreamReader(isJoueur);
-				BufferedReader brJoueur = new BufferedReader(isrJoueur);
+				BufferedReader brJoueur = new BufferedReader(new InputStreamReader(joueur.socketJoueur.getInputStream()));
 				PrintWriter pwJoueur = new PrintWriter(joueur.socketJoueur.getOutputStream(), true);
 				pwJoueur.println("Bienvenu Joueur "+idJoueur+" dans la Partie "+nombrePartie+" ! Entrer votre nom : ");
 				joueur.nomJoueur = brJoueur.readLine();
 				
 				System.out.println("~Connexion établie avec @"+joueur.nomJoueur+" Joueur"+idJoueur+"/Partie"+nombrePartie+" Ip: "+joueur.socketJoueur.getRemoteSocketAddress());
+				
+				//Grille
 				
 				while(true) {
 					String requeteJoueur = brJoueur.readLine().toString();
