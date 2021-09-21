@@ -1,7 +1,7 @@
 package serveur;
 
 import serveur.ThreadGame.ThreadJoueur;
-
+import client.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -11,13 +11,12 @@ import java.util.List;
 public class Commandes extends Thread {
 	private List<ThreadJoueur> listeJoueur = new ArrayList<ThreadJoueur>();
 	private String message;
-	private Socket socketJoueur;
-	//private int idJoueur;
+	private Joueur joueur;
 	
-	public Commandes(List<ThreadJoueur> liste, String message, Socket s) {
+	public Commandes(List<ThreadJoueur> liste, String message, Joueur j) {
 		this.listeJoueur = liste;
 		this.message = message;
-		this.socketJoueur =s;
+		this.joueur =j;
 	}
 	
 	
@@ -35,9 +34,14 @@ public class Commandes extends Thread {
 		}
 	}
 	
+	
+	
+	
 	@Override
 	public void run() {
-		broadCast(message,socketJoueur);
+		
+		
+		broadCast(message,joueur.socketJoueur);
 		
 	}
 

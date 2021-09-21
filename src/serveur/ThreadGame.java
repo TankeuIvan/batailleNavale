@@ -51,20 +51,6 @@ class ThreadGame extends Thread{
 			this.joueur = joueur;
 			this.idJoueur = idJoueur;
 		}
-
-		/*public void broadCast(String message, Socket socketJ) {
-			try {
-				for(ThreadJoueur player : listeJoueur) {
-					if(player.joueur.socketJoueur!=socketJ) {
-						PrintWriter printWriter = new PrintWriter(player.joueur.socketJoueur.getOutputStream(),true);
-						printWriter.println(message);
-					}
-				}
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
-		}*/
 		
 		@Override
 		public void run() {
@@ -82,9 +68,8 @@ class ThreadGame extends Thread{
 				while(true) {
 					String requeteJoueur = brJoueur.readLine().toString();
 					String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
-					new Commandes(listeJoueur, messageJoueur, joueur.socketJoueur).start();
-					//broadCast(messageJoueur,joueur.socketJoueur);
-					System.out.println("[!]Nouveau message de "+joueur.nomJoueur);	
+					new Commandes(listeJoueur, messageJoueur, joueur).start();
+					//System.out.println("[!]Nouveau message de "+joueur.nomJoueur);	
 				}
 				
 			} catch (IOException e) {

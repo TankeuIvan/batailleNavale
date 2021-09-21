@@ -32,9 +32,7 @@ import java.net.Socket;
 				System.out.println("*****Nouvelle Partie : Partie "+nombrePartie+"*****");
 				System.out.println("Tentative de connexion au Joueur 1/Partie"+nombrePartie+" : Player~"+ j1.socketJoueur.getRemoteSocketAddress());
 				
-				InputStream isJ1 = j1.socketJoueur.getInputStream() ;
-				InputStreamReader isrJ1 = new InputStreamReader(isJ1);
-				BufferedReader brJ1 = new BufferedReader(isrJ1);
+				BufferedReader brJ1 = new BufferedReader(new InputStreamReader(j1.socketJoueur.getInputStream()));
 				PrintWriter pwJ1 = new PrintWriter(j1.socketJoueur.getOutputStream(), true);
 				pwJ1.println("En attente d'un adversaire...");
 				
