@@ -11,12 +11,12 @@ import java.util.List;
 public class Commandes extends Thread {
 	private List<ThreadJoueur> listeJoueur = new ArrayList<ThreadJoueur>();
 	private String message;
-	private Joueur joueur;
+	private ThreadJoueur ThJoueur;
 	
-	public Commandes(List<ThreadJoueur> liste, String message, Joueur j) {
+	public Commandes(List<ThreadJoueur> liste, String message, ThreadJoueur thJ) {
 		this.listeJoueur = liste;
 		this.message = message;
-		this.joueur =j;
+		this.ThJoueur =thJ;
 	}
 	
 	
@@ -25,7 +25,9 @@ public class Commandes extends Thread {
 			for(ThreadJoueur player : listeJoueur) {
 				if(player.joueur.socketJoueur!=socketJ) {
 					PrintWriter printWriter = new PrintWriter(player.joueur.socketJoueur.getOutputStream(),true);
-					printWriter.println(message);
+					String messageJoueur = "\n"+ThJoueur.joueur.nomJoueur+": "+message;
+					printWriter.println(messageJoueur);
+					
 				}
 			}
 		} catch (IOException e) {
@@ -35,13 +37,23 @@ public class Commandes extends Thread {
 	}
 	
 	
+	public void buildShip(String message) {
+		if(message.charAt(0)=='+') {
+			ThJoueur.grilleJoueur.buildCoordGrille(message);
+			ThJoueur.grilleJoueur.showGrille();
+		}
+	}
+	
 	
 	
 	@Override
 	public void run() {
+		while (ThJoueur.grilleJoueur.estVide==true) {
+			buildShip(message);
+		}
 		
 		
-		broadCast(message,joueur.socketJoueur);
+		broadCast(message,ThJoueur.joueur.socketJoueur);
 		
 	}
 
