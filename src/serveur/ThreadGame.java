@@ -1,5 +1,6 @@
 package serveur;
 
+//import serveur.Grille.Coordonnees;
 import client.*;
 //import tp_prog_res.ServeurChat.ThreadClient;
 
@@ -41,34 +42,49 @@ class ThreadGame extends Thread{
 	
 	
 	
+	
+	
+	
+	
+	
 	public class ThreadJoueur extends Thread{
 		Joueur joueur;  //disponible dans le package serveur
 		private int idJoueur;
+		public BufferedReader brJoueur;
+		public PrintWriter pwJoueur;
+		public Grille grilleJoueur;
+		
 		
 		
 		
 		public ThreadJoueur(Joueur joueur, int idJoueur) {
 			this.joueur = joueur;
 			this.idJoueur = idJoueur;
+			try {
+				this.brJoueur = new BufferedReader(new InputStreamReader(joueur.socketJoueur.getInputStream()));
+				this.pwJoueur = new PrintWriter(joueur.socketJoueur.getOutputStream(), true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		@Override
 		public void run() {
 			//Streams Joueur
 			try {
-				BufferedReader brJoueur = new BufferedReader(new InputStreamReader(joueur.socketJoueur.getInputStream()));
-				PrintWriter pwJoueur = new PrintWriter(joueur.socketJoueur.getOutputStream(), true);
+				
 				pwJoueur.println("Bienvenu Joueur "+idJoueur+" dans la Partie "+nombrePartie+" ! Entrer votre nom : ");
 				joueur.nomJoueur = brJoueur.readLine();
 				
 				System.out.println("~Connexion établie avec @"+joueur.nomJoueur+" Joueur"+idJoueur+"/Partie"+nombrePartie+" Ip: "+joueur.socketJoueur.getRemoteSocketAddress());
 				
-				//Grille
+				pwJoueur.println("\nVoici la Grille sur laquelle vous placerez vos navires :");
+				new Grille(this).showGrille();
 				
 				while(true) {
 					String requeteJoueur = brJoueur.readLine().toString();
-					String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
-					new Commandes(listeJoueur, messageJoueur, joueur).start();
+					//String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
+					new Commandes(listeJoueur, requeteJoueur, this).start();
 					//System.out.println("[!]Nouveau message de "+joueur.nomJoueur);	
 				}
 				
