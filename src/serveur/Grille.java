@@ -7,11 +7,13 @@ public class Grille extends Thread {
 	
 	private String[] ligne = {"# ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
 	private String[] colonne = {"1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10"};
-	private String matrice[][] = new String[10][10];
-	ThreadJoueur ThJoueur;
+	private String matrice[][] = new String[10][10]; //ligne ensuite colonne
+	private ThreadJoueur ThJoueur;
 	public boolean estVide;
-	int indexY=0;
-	int indexX=0;
+	private int indexY=0;
+	private int indexX=0;
+	private boolean sensVertical=false;
+	
 	
 	public static void main(String[] args) {
 		//new Grille().start();
@@ -23,7 +25,7 @@ public class Grille extends Thread {
 		
 		for (int i = 0; i<10; i++) {		
 			for(int j=0; j<10; j++) {
-			matrice[i][j] = "*";
+			matrice[i][j] = ".";
 			}
 		}
 		
@@ -31,7 +33,90 @@ public class Grille extends Thread {
 		
 	}
 	
+	public void buildCoordGrille(String navire, int taille) {
+		if( (navire.charAt(0)-'A') ==(navire.charAt(3)-'A') ) sensVertical= true; 
+		else sensVertical= false;
+		
+		if(sensVertical==true) {
+			switch (taille){
+				case 1: //+B3
+					//char x = navire.charAt(1);
+					//char y = navire.charAt(2);
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					break;
+				
+				case 2: //+C5:C6 ou +C6:C5
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+					break;
+				
+				case 3: //+C5:C7
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O";
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+					break;
+				
+				case 4: //+C5:C8
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O"; //C6
+					matrice[(navire.charAt(4)-'3')][(navire.charAt(3)-'A')] = "O"; //C7
+					matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C8
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C9
+					break;
+				
+				case 5: //+C5:C9
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O"; //C5
+					matrice[(navire.charAt(4)-'4')][(navire.charAt(3)-'A')] = "O"; //C6
+					matrice[(navire.charAt(4)-'3')][(navire.charAt(3)-'A')] = "O"; //C7
+					matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C8
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C9
+					break;
+			}
+		}else {
+			
+			switch (taille){
+				case 1: //+B3
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+				break;
+				
+				case 2: //C5:D5
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+					break;
+					
+				case 3: //C5:E5 -> C5 D5 E5
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'B')] = "O";
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+					break;
+					
+				case 4: //C5:F5 -> C5 D5 E5 F5
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'C')] = "O";
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'B')] = "O";
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+					break;
+					
+				case 5: //C5:F5 -> C5 D5 E5 F5
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'D')] = "O";
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'C')] = "O";
+					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'B')] = "O";
+					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+					break;
+			}
+			
+		}
+		//estVide = false;
+	}
+	
+	
+	
+	
+	
+	
+	
 	public void showGrille() {
+		ThJoueur.pwJoueur.println();
 		for(int i=0; i<=10; i++) {
 			ThJoueur.pwJoueur.print(ligne[i]+"   ");	
 		}
@@ -46,19 +131,7 @@ public class Grille extends Thread {
 		}
 	}
 	
-	public void buildCoordGrille(String canon) {
-		String x= ""+canon.charAt(1);
-		String y= ""+canon.charAt(2);
-		int j=0;
-		if (x==ligne[j]) indexY = j;
-		for(int i=0; i<10;i++) {
-			j++;
-			if (x==ligne[j]) indexY = j;
-			if (y==colonne[i]) indexX = i;
-		}
-		matrice[indexX][indexY] = "0";
-		//estVide = false;
-	}
+	
 	
 	public void testCanon(){
 		if(matrice[indexX][indexY] == "*") matrice[indexX][indexY] = "-";
