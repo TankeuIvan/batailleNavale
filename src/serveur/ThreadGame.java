@@ -53,7 +53,9 @@ class ThreadGame extends Thread{
 		public BufferedReader brJoueur;
 		public PrintWriter pwJoueur;
 		public Grille grilleJoueur;
-		
+		public int etapeJeu = 1;
+		public int etapeBuild = 1;
+		public int compteurShip =1;
 		
 		
 		
@@ -80,7 +82,7 @@ class ThreadGame extends Thread{
 				
 				pwJoueur.println("\nVoici la Grille sur laquelle vous placerez vos navires :");
 				new Grille(this).showGrille();
-				
+				pwJoueur.println("Cordonnees du navire 1");
 				while(true) {
 					String requeteJoueur = brJoueur.readLine().toString();
 					//String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
