@@ -16,6 +16,8 @@ import java.util.List;
 class ThreadGame extends Thread{
 	private Joueur j1;
 	private Joueur j2;
+	ThreadJoueur threadJoueur1;
+	ThreadJoueur threadJoueur2;
 	private int nombrePartie;
 	protected List<ThreadJoueur> listeJoueur = new ArrayList<ThreadJoueur>();
 	
@@ -26,16 +28,18 @@ class ThreadGame extends Thread{
 		this.j1 = J1;
 		this.j2 = J2;
 		this.nombrePartie=id;
+		threadJoueur1 = new ThreadJoueur(j1, j1.id);
+		threadJoueur2 = new ThreadJoueur(j2, j2.id);
 		
 	}
 	
 	
 	@Override
 	public void run() {
-		ThreadJoueur threadJoueur1 = new ThreadJoueur(j1, j1.id);
+		//ThreadJoueur threadJoueur1 = new ThreadJoueur(j1, j1.id);
 		listeJoueur.add(threadJoueur1);
 		threadJoueur1.start();
-		ThreadJoueur threadJoueur2 = new ThreadJoueur(j2, j2.id);
+		//ThreadJoueur threadJoueur2 = new ThreadJoueur(j2, j2.id);
 		listeJoueur.add(threadJoueur2);
 		threadJoueur2.start();
 	}
@@ -56,6 +60,7 @@ class ThreadGame extends Thread{
 		public int etapeJeu = 1;
 		public int etapeBuild = 1;
 		public int compteurShip =1;
+		public boolean placementEnd = false;
 		
 		
 		
@@ -80,15 +85,20 @@ class ThreadGame extends Thread{
 				
 				System.out.println("~Connexion établie avec @"+joueur.nomJoueur+" Joueur"+idJoueur+"/Partie"+nombrePartie+" Ip: "+joueur.socketJoueur.getRemoteSocketAddress());
 				
-				pwJoueur.println("\nVoici la Grille sur laquelle vous placerez vos navires :");
+				pwJoueur.println("\nVoici la Grille sur laquelle vous placerez les navires constituant votre flotte :");
 				new Grille(this).showGrille();
-				pwJoueur.println("Cordonnees du navire 1");
-				while(true) {
+				pwJoueur.println("Vous avez droit : 1 Sous-marin, 1 Torpilleur, 2 Croiseurs, 2 CUIRASSE et 1 Porte-avion.\n");
+				pwJoueur.println("Cordonnees du Sous-marin (Une case) :");
+				while(etapeJeu==1) {
 					String requeteJoueur = brJoueur.readLine().toString();
 					//String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
 					new Commandes(listeJoueur, requeteJoueur, this).start();
 					//System.out.println("[!]Nouveau message de "+joueur.nomJoueur);	
 				}
+				
+				//while(etapeJeu==2) {
+					new Bataille(threadJoueur1,threadJoueur2).start();
+				//}
 				
 			} catch (IOException e) {
 				e.printStackTrace();

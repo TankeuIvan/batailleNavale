@@ -3,16 +3,17 @@ package serveur;
 import serveur.ThreadGame.ThreadJoueur;
 
 
-public class Grille extends Thread {
+public class Grille {
 	
-	private String[] ligne = {"# ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
-	private String[] colonne = {"1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10"};
+	private String[] ligne = {"#  ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+	private String[] colonne = {"0  ", "1  ", "2  ", "3  ", "4  ", "5  ", "6  ", "7  ", "8  ", "9  "};
 	private String matrice[][] = new String[10][10]; //ligne ensuite colonne
 	private ThreadJoueur ThJoueur;
 	public boolean estVide;
 	private int indexY=0;
 	private int indexX=0;
 	private boolean sensVertical=false;
+	private boolean testFormatCoord;
 	
 	
 	public static void main(String[] args) {
@@ -33,78 +34,220 @@ public class Grille extends Thread {
 		
 	}
 	
-	public void buildCoordGrille(String navire, int taille) {
-		if( (navire.charAt(0)-'A') ==(navire.charAt(3)-'A') ) sensVertical= true; 
-		else sensVertical= false;
+	public void buildCoordGrille(String navire, int cas) {  
+		//(navire.charAt(0)-'A') ==(navire.charAt(3)-'A') ) 
 		
-		if(sensVertical==true) {
-			switch (taille){
-				case 1: //+B3
-					//char x = navire.charAt(1);
-					//char y = navire.charAt(2);
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
+		if(navire.charAt(0) == navire.charAt(3)) { //Sens vertical
+			switch (cas){// Format : A0/A1 ou C5/D5
+			
+				case 1: //  B3/B3 //Sous-marin
+					if(navire.charAt(4)-navire.charAt(1)==0) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees Torpilleur (2 cases) :");
+						ThJoueur.etapeBuild=2;
+					}else {
+						ThJoueur.etapeBuild = 1;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 				
-				case 2: //+C5:C6 ou +C6:C5
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+				case 2: //	C5:C6  // Torpilleur
+					if(navire.charAt(4)-navire.charAt(1)==1) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du premier Croiseur (3 cases) :");
+						ThJoueur.etapeBuild=3;
+					}else {
+						ThJoueur.etapeBuild = 2;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 				
-				case 3: //+C5:C7
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-					matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O";
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+				case 3: //	C5:C7 //premier Croiseur
+					if(navire.charAt(4)-navire.charAt(1)==2) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du deuxieme Croiseur (3 cases) :");
+						ThJoueur.etapeBuild=4;
+					}else {
+						ThJoueur.etapeBuild = 3;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
+					break;
+					
+				case 4: //	C5:C7 //deuxième Croiseur
+					if(navire.charAt(4)-navire.charAt(1)==2) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du premier CUIRASSE (4 cases :");
+						ThJoueur.etapeBuild=5;
+					}else {
+						ThJoueur.etapeBuild = 4;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 				
-				case 4: //+C5:C8
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O"; //C6
-					matrice[(navire.charAt(4)-'3')][(navire.charAt(3)-'A')] = "O"; //C7
-					matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C8
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C9
+				case 5: //	C5:C8 // premier cuirasse
+					if(navire.charAt(4)-navire.charAt(1)==3) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O"; //C6
+						matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C7
+						matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C8
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O"; //C9
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du deuxieme CUIRASSE (4 cases) :");
+						ThJoueur.etapeBuild=6;
+					}else {
+						ThJoueur.etapeBuild = 5;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
+					break;
+					
+				case 6: //	C5:C8 // deuxieme cuirasse
+					if(navire.charAt(4)-navire.charAt(1)==3) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O"; //C6
+						matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C7
+						matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C8
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O"; //C9
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du Porte-avions (5 cases) :");
+						ThJoueur.etapeBuild=7;
+					}else {
+						ThJoueur.etapeBuild = 6;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 				
-				case 5: //+C5:C9
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O"; //C5
-					matrice[(navire.charAt(4)-'4')][(navire.charAt(3)-'A')] = "O"; //C6
-					matrice[(navire.charAt(4)-'3')][(navire.charAt(3)-'A')] = "O"; //C7
-					matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C8
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C9
+				case 7: //	C5:C9 //porte-avions
+					if(navire.charAt(4)-navire.charAt(1)==4) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O"; //C5
+						matrice[(navire.charAt(4)-'3')][(navire.charAt(3)-'A')] = "O"; //C6
+						matrice[(navire.charAt(4)-'2')][(navire.charAt(3)-'A')] = "O"; //C7
+						matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O"; //C8
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O"; //C9
+						ThJoueur.etapeBuild=0;
+						ThJoueur.compteurShip=0;
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Construction de votre flotte reussie ! Entrer \"pret\"");
+						ThJoueur.etapeJeu=2;
+					}else {
+						ThJoueur.etapeBuild = 7;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 			}
-		}else {
+		}else if(navire.charAt(1) == navire.charAt(4)) { //Sens horizontal
 			
-			switch (taille){
-				case 1: //+B3
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-				break;
+			switch (cas){ //Format: C5/D5
+				case 1: //	B3/B3 //Sous-marin
+					if(navire.charAt(3)-navire.charAt(0)== 0) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees Torpilleur (2 cases) :");
+						ThJoueur.etapeBuild = 2;
+					}else { 
+						ThJoueur.etapeBuild = 1;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
+					break;
 				
-				case 2: //C5:D5
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+				case 2: //C5:D5 //Torpilleur
+					if(navire.charAt(3)-navire.charAt(0)== 1) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du premier Croiseur (3 cases) :");
+						ThJoueur.etapeBuild = 3;
+					}else {
+						ThJoueur.etapeBuild = 2;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 					
-				case 3: //C5:E5 -> C5 D5 E5
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'B')] = "O";
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+				case 3: //C5:E5 -> C5 D5 E5// Premier Croiseur
+					if(navire.charAt(3)-navire.charAt(0)== 2) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'B')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du deuxieme Croiseur (3 cases) :");
+						ThJoueur.etapeBuild = 4;
+					}else {
+						ThJoueur.etapeBuild = 3;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 					
-				case 4: //C5:F5 -> C5 D5 E5 F5
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'C')] = "O";
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'B')] = "O";
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+				case 4: //C5:E5 -> C5 D5 E5 // Deuxième Croiseur
+					if(navire.charAt(3)-navire.charAt(0)== 2) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'B')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du premier CUIRASSE (4 cases) :");
+						ThJoueur.etapeBuild = 5;
+					}else {
+						ThJoueur.etapeBuild = 4;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 					
-				case 5: //C5:F5 -> C5 D5 E5 F5
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(0)-'A')] = "O";
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'D')] = "O";
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'C')] = "O";
-					matrice[(navire.charAt(1)-'1')][(navire.charAt(3)-'B')] = "O";
-					matrice[(navire.charAt(4)-'1')][(navire.charAt(3)-'A')] = "O";
+				case 5: //C5:F5 -> C5 D5 E5 F5 // premier CUIRASSE
+					if(navire.charAt(3)-navire.charAt(0)== 3) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'C')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'B')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du deuxieme CUIRASSE (4 cases) :");
+						ThJoueur.etapeBuild = 6;
+					}else {
+						ThJoueur.etapeBuild = 5;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
+					break;
+					
+				case 6: //C5:F5 -> C5 D5 E5 F5 // deuxième CUIRASSE
+					if(navire.charAt(3)-navire.charAt(0)== 3) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'C')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'B')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.pwJoueur.println("Cordonnees du Porte-avions (5 cases) :");
+						ThJoueur.etapeBuild = 7;
+					}else {
+						ThJoueur.etapeBuild = 6;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
+					break;
+					
+				case 7: //C5:F5 -> C5 D5 E5 F5 //Porte-avion
+					if(navire.charAt(3)-navire.charAt(0)== 4) {
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(0)-'A')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'D')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'C')] = "O";
+						matrice[(navire.charAt(1)-'0')][(navire.charAt(3)-'B')] = "O";
+						matrice[(navire.charAt(4)-'0')][(navire.charAt(3)-'A')] = "O";
+						ThJoueur.grilleJoueur.showGrille();
+						ThJoueur.etapeBuild=0;
+						ThJoueur.compteurShip=0;
+						ThJoueur.pwJoueur.println("Construction de votre flotte reussie ! Entrer \\\"pret\\\"\"");
+						ThJoueur.etapeJeu=2;
+					}else {
+						ThJoueur.etapeBuild = 7;
+						ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
 					break;
 			}
 			
+		}else { // Sens ni vertical ni horizontal
+			ThJoueur.pwJoueur.println("Coordonnees incorectes.");
 		}
 		//estVide = false;
 	}
@@ -138,44 +281,5 @@ public class Grille extends Thread {
 		else matrice[indexX][indexY] = "#";	
 	}
 	
-	@Override
-	public void run() {
-		
-		}
-	
-	
-	
-	/*public class Coordonnees {
-		private String x;
-		private String y;
-		private String canon;
-		int a=0;
-		int b=0;
-		
-		public Coordonnees(String canon) {
-			super();
-			this.x = ""+canon.charAt(1);
-			this.y = ""+canon.charAt(2);
-			this.canon = canon;
-			
-			for(int i=0; i<ligne.length;i++) {
-				if (x==ligne[i]) a = i;
-				if (y==colonne[i]) b = i;
-			}
-			
-		}
-		
-		public void buildCoord() {
-			matrice[b][a] = "[]";
-		}
-		
-		public void canon(){
-			if(matrice[b][a] == "*") matrice[b][a] = "O";
-			else matrice[b][a] = "#";	
-		}
-		
-		
-		
-	}*/
 	
 }
