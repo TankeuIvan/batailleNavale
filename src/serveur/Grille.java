@@ -1,6 +1,6 @@
 package serveur;
 
-import serveur.ThreadGame.ThreadJoueur;
+//import serveur.ThreadGame.ThreadJoueur;
 
 
 public class Grille {
@@ -237,7 +237,7 @@ public class Grille {
 						ThJoueur.grilleJoueur.showGrille();
 						ThJoueur.etapeBuild=0;
 						ThJoueur.compteurShip=0;
-						ThJoueur.pwJoueur.println("Construction de votre flotte reussie ! Entrer \\\"pret\\\"\"");
+						ThJoueur.pwJoueur.println("Construction de votre flotte reussie ! Entrer \"pret\"");
 						ThJoueur.etapeJeu=2;
 					}else {
 						ThJoueur.etapeBuild = 7;
@@ -274,11 +274,35 @@ public class Grille {
 		}
 	}
 	
+	public void showMatriceGen() {
+		ThJoueur.listeJoueur.get(0).pwJoueur.println();
+		for(int i=0; i<=10; i++) {
+			ThJoueur.listeJoueur.get(0).pwJoueur.print(ligne[i]+"   ");	
+		}
+		ThJoueur.listeJoueur.get(0).pwJoueur.println();
+		for (int i = 0; i<10; i++) {
+			ThJoueur.listeJoueur.get(0).pwJoueur.print(colonne[i]+"   ");	
+			for(int j=0; j<10; j++) {
+				ThJoueur.listeJoueur.get(0).pwJoueur.print(ThJoueur.matriceGen[i][j]+"   ");	
+			}
+			ThJoueur.listeJoueur.get(0).pwJoueur.println();
+			ThJoueur.listeJoueur.get(0).pwJoueur.println();
+		}
+	}
 	
 	
-	public void testCanon(){
-		if(matrice[indexX][indexY] == "*") matrice[indexX][indexY] = "-";
-		else matrice[indexX][indexY] = "#";	
+	
+	public boolean testCanon(String canon){
+		if(matrice[(canon.charAt(1)-'0')][(canon.charAt(0)-'A')] == "O") {
+			matrice[(canon.charAt(1)-'0')][(canon.charAt(0)-'A')] = "#";
+			ThJoueur.matriceGen[(canon.charAt(1)-'0')][(canon.charAt(0)-'A')] = "#";
+			return true;
+		}
+		else {
+			matrice[(canon.charAt(1)-'0')][(canon.charAt(0)-'A')] = "P";
+			ThJoueur.matriceGen[(canon.charAt(1)-'0')][(canon.charAt(0)-'A')] = "P";
+			return false;
+		}
 	}
 	
 	

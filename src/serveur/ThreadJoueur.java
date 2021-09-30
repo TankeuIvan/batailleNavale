@@ -1,7 +1,6 @@
-/*package client;
+package serveur;
 
-import serveur.*;
-import serveur.Grille;
+//import client.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +22,7 @@ public class ThreadJoueur extends Thread{
 	public BufferedReader brJoueur;
 	public PrintWriter pwJoueur;
 	public Grille grilleJoueur;
+	public String matriceGen[][] = new String[10][10];
 	public int etapeJeu = 1;
 	public int etapeBuild = 1;
 	public int compteurShip =1;
@@ -39,10 +39,15 @@ public class ThreadJoueur extends Thread{
 		}
 	}*/
 
-	/*public ThreadJoueur(int idJ, int nbrePartie, Socket s) {
+	public ThreadJoueur(int idJ, int nbrePartie, Socket s) {
 		this.idJoueur = idJ;
 		this.nombrePartie = nbrePartie;
 		this.socketJoueur=s;
+		for (int i = 0; i<10; i++) {		
+			for(int j=0; j<10; j++) {
+			matriceGen[i][j] = ".";
+			}
+		}
 		try {
 			this.brJoueur = new BufferedReader(new InputStreamReader(this.socketJoueur.getInputStream()));
 			this.pwJoueur = new PrintWriter(this.socketJoueur.getOutputStream(), true);
@@ -50,6 +55,8 @@ public class ThreadJoueur extends Thread{
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 	@Override
 	public void run() {
@@ -70,10 +77,28 @@ public class ThreadJoueur extends Thread{
 				//String messageJoueur = "\n"+joueur.nomJoueur+": "+requeteJoueur;
 				new Commandes(listeJoueur, requeteJoueur, this).start();
 				//System.out.println("[!]Nouveau message de "+joueur.nomJoueur);	
+				System.out.println("Joueur"+idJoueur+" etapeBuild="+this.etapeBuild+" etapeJeu="+this.etapeJeu+"   "+"Joueur"+listeJoueur.get(0).idJoueur+" etapeBuild="+listeJoueur.get(0).etapeBuild+" etapeJeu="+listeJoueur.get(0).etapeJeu);
 			}
 			
 			//while(etapeJeu==2) {
-				//new Bataille(threadJoueur1,threadJoueur2).start();
+			System.out.println("Joueur"+this.idJoueur+"- Début de la boucle etapeJeu = 1 !");
+			
+			//int i=0;
+			while(listeJoueur.get(0).etapeJeu==1) {
+				//this.pwJoueur.println("Joueur1 etapeJeu ="+this.etapeJeu+" Joueur2 etapeJeu = "+listeJoueur.get(0).etapeJeu);
+				//if(i==0) this.pwJoueur.println("En attente de l'autre joueur...");
+				//i++;
+			}
+			
+			System.out.println("Joueur"+this.idJoueur+"- Fin de la boucle etapeJeu = 1 ! Joueur"+this.idJoueur+" etapeJeu="+this.etapeJeu+" et Joueur"+listeJoueur.get(0).idJoueur+" etapeJeu="+listeJoueur.get(0).etapeJeu);
+			
+			if(this.idJoueur==1)
+				new ThreadGame(this, listeJoueur.get(0), nombrePartie).start();
+			else
+				new ThreadGame(listeJoueur.get(0), this, nombrePartie).start();
+			
+				
+			//else new ThreadGame(listeJoueur.get(0), this, nombrePartie).start();
 			//}
 			
 		} catch (IOException e) {
@@ -82,4 +107,3 @@ public class ThreadJoueur extends Thread{
 			
 	}
 }
-*/

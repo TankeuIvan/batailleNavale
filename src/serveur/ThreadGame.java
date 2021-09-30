@@ -1,7 +1,7 @@
 package serveur;
 
 //import serveur.Grille.Coordonnees;
-import client.*;
+//import client.*;
 //import tp_prog_res.ServeurChat.ThreadClient;
 
 import java.io.BufferedReader;
@@ -14,22 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ThreadGame extends Thread{
-	private Joueur j1;
-	private Joueur j2;
-	ThreadJoueur threadJoueur1;
-	ThreadJoueur threadJoueur2;
+	//private Joueur j1;
+	//private Joueur j2;
+	ThreadJoueur ThJoueur1;
+	ThreadJoueur ThJoueur2;
 	private int nombrePartie;
 	protected List<ThreadJoueur> listeJoueur = new ArrayList<ThreadJoueur>();
 	
 	public ThreadGame() {
 			
 	}
-	public ThreadGame(Joueur J1, Joueur J2, int id) {
-		this.j1 = J1;
-		this.j2 = J2;
-		this.nombrePartie=id;
-		threadJoueur1 = new ThreadJoueur(j1, j1.id);
-		threadJoueur2 = new ThreadJoueur(j2, j2.id);
+	public ThreadGame(ThreadJoueur thJ1 , ThreadJoueur thJ2, int nbrePartie) {
+		this.ThJoueur1 = thJ1;
+		this.ThJoueur2 =thJ2;
+		this.nombrePartie=nbrePartie;
+		listeJoueur.add(ThJoueur1);
+		listeJoueur.add(ThJoueur2);
+		//threadJoueur1 = new ThreadJoueur(j1, j1.id);
+		//threadJoueur2 = new ThreadJoueur(j2, j2.id);
 		
 	}
 	
@@ -37,11 +39,19 @@ class ThreadGame extends Thread{
 	@Override
 	public void run() {
 		//ThreadJoueur threadJoueur1 = new ThreadJoueur(j1, j1.id);
-		listeJoueur.add(threadJoueur1);
-		threadJoueur1.start();
+		//listeJoueur.add(ThJoueur1);
 		//ThreadJoueur threadJoueur2 = new ThreadJoueur(j2, j2.id);
-		listeJoueur.add(threadJoueur2);
-		threadJoueur2.start();
+		//listeJoueur.add(ThJoueur2);
+		if(ThJoueur1.etapeJeu==1 && ThJoueur2.etapeJeu==1) {
+			ThJoueur1.start();
+			ThJoueur2.start();
+		}
+			
+		while(ThJoueur1.etapeJeu==1 && ThJoueur2.etapeJeu==1) {
+			
+		}
+		
+		if(ThJoueur1.etapeJeu==2 && ThJoueur2.etapeJeu==2)	new Bataille(ThJoueur1,ThJoueur2, nombrePartie).start();
 	}
 	
 	
@@ -51,7 +61,7 @@ class ThreadGame extends Thread{
 	
 	
 	
-	public class ThreadJoueur extends Thread{
+	/*public class ThreadJoueur extends Thread{
 		Joueur joueur;  //disponible dans le package serveur
 		private int idJoueur;
 		public BufferedReader brJoueur;
@@ -64,9 +74,9 @@ class ThreadGame extends Thread{
 		
 		
 		
-		public ThreadJoueur(Joueur joueur, int idJoueur) {
+		public ThreadJoueur(Joueur joueur) {
 			this.joueur = joueur;
-			this.idJoueur = idJoueur;
+			//this.idJoueur = idJoueur;
 			try {
 				this.brJoueur = new BufferedReader(new InputStreamReader(joueur.socketJoueur.getInputStream()));
 				this.pwJoueur = new PrintWriter(joueur.socketJoueur.getOutputStream(), true);
@@ -105,6 +115,6 @@ class ThreadGame extends Thread{
 			}
 				
 		}
-	}
+	}*/
 	
 }

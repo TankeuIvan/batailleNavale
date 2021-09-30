@@ -1,6 +1,6 @@
 package serveur;
 
-import serveur.ThreadGame.ThreadJoueur;
+//import serveur.ThreadGame.ThreadJoueur;
 //import client.*;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,9 +26,9 @@ public class Commandes extends Thread {
 	public void broadCast(String message, Socket socketJ) {
 		try {
 			for(ThreadJoueur player : listeJoueur) {
-				if(player.joueur.socketJoueur!=socketJ) {
-					PrintWriter printWriter = new PrintWriter(player.joueur.socketJoueur.getOutputStream(),true);
-					String messageJoueur = "\n"+ThJoueur.joueur.nomJoueur+": "+message;
+				if(player.socketJoueur!=socketJ) {
+					PrintWriter printWriter = new PrintWriter(player.socketJoueur.getOutputStream(),true);
+					String messageJoueur = "\n"+ThJoueur.nomJoueur+": "+message;
 					printWriter.println(messageJoueur);
 				}
 			}
@@ -79,15 +79,19 @@ public class Commandes extends Thread {
 	@Override
 	public void run() {
 		//buildShip(message,5);
-		if((message.charAt(0)=='+') && message.length()==6) {
-				message = message.substring(1,6);
-				etapeUne(message);
-		}else if(message.charAt(0)=='#') {
-				broadCast(message,ThJoueur.joueur.socketJoueur);
-		}else {
-				ThJoueur.pwJoueur.println("Coordonnees incorectes.");
-				}
-		
+		if(ThJoueur.etapeJeu==1) {
+			if((message.charAt(0)=='+') && message.length()==6) {
+					message = message.substring(1,6);
+					etapeUne(message);
+			}else if(message.charAt(0)=='*') {
+					broadCast(message,ThJoueur.socketJoueur);
+			}else if(message.charAt(0)=='{') {
+				ThJoueur.etapeJeu = 2;
+			}
+			else {
+					ThJoueur.pwJoueur.println("Coordonnees incorectes.");
+					}
+		}
 	}
 
 }
